@@ -9,3 +9,4 @@ scikit-learn==1.5.2
 scikit-learn-intelex==2025.0.0
 tqdm==4.67.1
 ultralytics==8.3.40
+python-dotenv==1.0.1
