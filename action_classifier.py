@@ -39,16 +39,20 @@ class RNNPoseActionClassifier:
     target_height = target_width * image.shape[0] // image.shape[1]
     image = cv2.resize(image, (target_width, target_height))
 
+    resize_ratio = (target_width / image_width, target_height / image_height)
 
     image_height, image_width, _ = image.shape
     if display_image and detected_pose is not None:
       if display_landmarks:
-        # print(np.int8(detected_pose.landmarks))
         for landmark_x, landmark_y in np.int8(detected_pose.landmarks): # type: ignore
-          # landmark_x = min(int(landmark.x * image_width), image_width - 1)
-          # landmark_y = min(int(landmark.y * image_height), image_height - 1)
+          landmark_x = min(int(landmark_x * resize_ratio[0]), target_width - 1)
+          landmark_y = min(int(landmark_y * resize_ratio[1]), target_width - 1)
           cv2.circle(image, (landmark_x, landmark_y), 5, (0, 255, 0), -1)
+
+      # put text on head position
       head_coordinate = detected_pose.landmarks[0]
+      head_coordinate[0] *= resize_ratio[0]
+      head_coordinate[1] *= resize_ratio[1]
       ori_x = min(int(head_coordinate[0]), image_width) + 30
       ori_y = min(int(head_coordinate[1]), image_height)
 
