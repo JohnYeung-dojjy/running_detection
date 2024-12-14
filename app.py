@@ -3,7 +3,7 @@ from __future__ import annotations
 from pose_detector import UltralyticsPoseDetector, PoseDetectionResult
 from vidio_stream_manager import VideoStreamManager
 from audio_player import AudioPlayer
-from action_classifier import RNNPoseActionClassifier
+from action_classifier import MultiClassRNNPoseActionClassifier
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -42,7 +42,7 @@ def main(
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = UltralyticsPoseDetector('x')
-  action_classifier = RNNPoseActionClassifier(22, 64, 2, 4, 4, 100, "0.01")
+  action_classifier = MultiClassRNNPoseActionClassifier(22, 64, 2, 4, 4, 100, "0.01")
 
   last_resume_time = time.time()
 
