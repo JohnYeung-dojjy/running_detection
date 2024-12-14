@@ -15,6 +15,7 @@ class RNNModel(torch.nn.Module):
 
         # Readout layer
         self.fc = torch.nn.Linear(hidden_dim, output_dim)
+        self.sigmoid = torch.nn.Sigmoid()
 
     def forward(self, x: torch.Tensor):
 
@@ -24,4 +25,5 @@ class RNNModel(torch.nn.Module):
         # One time step
         out, hn = self.rnn(x, h0)
         out = self.fc(out[:, -1, :])
+        out = self.sigmoid(out)
         return out

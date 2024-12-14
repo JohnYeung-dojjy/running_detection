@@ -9,8 +9,10 @@ from model_classes.RNN.v1 import RNNModel
 
 from pose_detector import PoseDetectionResult
 
+# used in model training and inference
+OUTPUT_LABELS = ["walking", "running"]
+
 class RNNPoseActionClassifier:
-  OUTPUT_LABELS = ["no_detection", "jogging", "walking", "running"]
   def __init__(self, input_dim: int, hidden_dim: int, layer_dim: int, output_dim: int, window_length: int, epochs: int, lr: str):
     model_path = Path("models") / "RNN" / f"{input_dim}-{hidden_dim}-{layer_dim}-{output_dim}_WIN-{window_length}_EPOCH-{epochs}_LR-{lr}.pt"
     self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
@@ -24,11 +26,9 @@ class RNNPoseActionClassifier:
     self.window.append(pose.normalized_landmarks.flatten())
     if len(self.window) < self.window_length:
       return "no_detection"
-    pose_landmarks = torch.tensor(self.window).unsqueeze(0).to(self.device)
+    pose_landmarks = torch.tensor(np.array(self.window)).unsqueeze(0).to(self.device)
     y_pred: torch.Tensor = self.model(pose_landmarks)
-    label = self.OUTPUT_LABELS[torch.argmax(y_pred)]
-    if label == "jogging":
-      label = "running"
+    label = OUTPUT_LABELS[torch.argmax(y_pred)]
     return label
 
   def display_image(self, image, label_pred: str, detected_pose: PoseDetectionResult|None, display_image:bool=False, display_landmarks:bool=False):
