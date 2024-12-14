@@ -1,4 +1,5 @@
 import torch
+from torch.autograd import Variable
 
 class RNNModel(torch.nn.Module):
     # Copied from https://www.kaggle.com/code/kanncaa1/recurrent-neural-network-with-pytorch
@@ -20,7 +21,7 @@ class RNNModel(torch.nn.Module):
     def forward(self, x: torch.Tensor):
 
         # Initialize hidden state with zeros
-        h0 = torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).to(x.device)
+        h0 = Variable(torch.zeros(self.layer_dim, x.size(0), self.hidden_dim).to(x.device))
 
         # One time step
         out, hn = self.rnn(x, h0)
