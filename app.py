@@ -3,7 +3,7 @@ from __future__ import annotations
 from pose_detector import UltralyticsPoseDetector, PoseDetectionResult
 from vidio_stream_manager import VideoStreamManager
 from audio_player import AudioPlayer
-from action_classifier import MultiClassRNNPoseActionClassifier
+from action_classifier import MultiClassRNNPoseActionClassifier, MultiClassLSTMPoseActionClassifier
 import os
 from dotenv import load_dotenv
 from pathlib import Path
@@ -42,7 +42,7 @@ def main(
                                     video_file=video_file,
                                     fps=fps)
   pose_detector = UltralyticsPoseDetector('x')
-  action_classifier = MultiClassRNNPoseActionClassifier(22, 64, 2, 4, 4, 100, "0.01")
+  action_classifier = MultiClassLSTMPoseActionClassifier(22, 8, 2, 25, 100, "0.01")
 
   last_resume_time = time.time()
 
@@ -74,6 +74,7 @@ if __name__ == "__main__":
   main(
     # camera_id=0,
     video_file="Dataset/KTH/running/person02_running_d1_uncomp.avi",
+    # video_file="Dataset/KTH/walking/person02_walking_d1_uncomp.avi",
     fps=25,
     display_image=True,
     display_landmarks=True
