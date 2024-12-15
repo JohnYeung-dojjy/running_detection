@@ -16,3 +16,11 @@ This repo is a rework of my existing running detection, I started a new repo due
 
 - The original repo contains mp3 and .tflite files that might have copy right issues.
 - The original implementation uses mediapipe pose estimation -> SVM for action classification. It didn't consider the potential change into YOLO pose estimation -> LSTM classification. It is easier for me to start over, with some code reuse.
+
+## Conclusion
+
+- RNN models tends to have gradient explode/vanish issue, I switched to LSTM
+- The dataset I used is not very diverse, and the 'running' is a sprint, not dash, which also made the model harder to train.
+
+## Demo videos
+TODO
