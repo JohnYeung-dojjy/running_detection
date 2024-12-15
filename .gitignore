@@ -7,6 +7,8 @@ audio/*
 # directory that stores the generated training data
 TrainingData/*/
 
+model_training/runs/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
