@@ -23,4 +23,4 @@ This repo is a rework of my existing running detection, I started a new repo due
 - The dataset I used is not very diverse, and the 'running' is a sprint, not dash, which also made the model harder to train.
 
 ## Demo videos
-TODO
+[Running detection demo, using Ultralytics pose estimation and LSTM](https://www.youtube.com/watch?v=tkHygnV7M2M)
