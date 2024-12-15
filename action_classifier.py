@@ -7,6 +7,7 @@ import torch
 import torch.nn as nn
 from pathlib import Path
 from model_classes.RNN.v1 import RNNModel
+from model_classes.LSTM.v1 import LSTMModel
 
 from pose_detector import PoseDetectionResult
 
@@ -57,7 +58,30 @@ class MultiClassRNNPoseActionClassifier(PoseActionClassifier):
 
   @torch.no_grad()
   def classify(self, pose: PoseDetectionResult)->str:
-    self.window.append(pose.normalized_landmarks.flatten())
+    flattened = pose.normalized_landmarks.flatten()
+    if (flattened != 0).any():
+      self.window.append(pose.normalized_landmarks.flatten())
+    if len(self.window) < self.window_length:
+      return "no_detection"
+    pose_landmarks = torch.tensor(np.array(self.window)).unsqueeze(0).to(self.device)
+    y_pred: torch.Tensor = self.model(pose_landmarks)
+    label = OUTPUT_LABELS[torch.argmax(y_pred)]
+    return label
+
+class MultiClassLSTMPoseActionClassifier(PoseActionClassifier):
+  def __init__(self, input_dim: int, hidden_dim: int, output_dim: int, window_length: int, epochs: int, lr: str):
+    model_path = Path("models") / "LSTM" / "MultiClass" / f"{input_dim}-{hidden_dim}-{output_dim}_WIN-{window_length}_EPOCH-{epochs}_LR-{lr}.pt"
+    self.device = "cuda:0" if torch.cuda.is_available() else "cpu"
+    self.model: nn.Module = LSTMModel(input_dim, hidden_dim, output_dim).to(self.device).eval()
+    self.model.load_state_dict(torch.load(model_path))
+    self.window_length = window_length
+    self.window = deque(maxlen=self.window_length)
+
+  @torch.no_grad()
+  def classify(self, pose: PoseDetectionResult)->str:
+    flattened = pose.normalized_landmarks.flatten()
+    if (flattened != 0).any():
+      self.window.append(pose.normalized_landmarks.flatten())
     if len(self.window) < self.window_length:
       return "no_detection"
     pose_landmarks = torch.tensor(np.array(self.window)).unsqueeze(0).to(self.device)
